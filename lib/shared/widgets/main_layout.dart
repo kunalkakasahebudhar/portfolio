@@ -1,11 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:portfolio/features/about/presentation/about_screen.dart';
+import 'package:portfolio/features/contact/presentation/contact_screen.dart';
+import 'package:portfolio/features/experience/presentation/experience_screen.dart';
+import 'package:portfolio/features/home/presentation/home_screen.dart';
+import 'package:portfolio/features/projects/presentation/projects_screen.dart';
+import 'package:portfolio/features/skills/presentation/skills_screen.dart';
 import 'package:portfolio/shared/widgets/top_navigation_bar.dart';
 
-class MainLayout extends StatelessWidget {
-  final Widget child;
+class MainLayout extends StatefulWidget {
+  const MainLayout({super.key});
 
-  const MainLayout({super.key, required this.child});
+  @override
+  State<MainLayout> createState() => _MainLayoutState();
+}
+
+class _MainLayoutState extends State<MainLayout> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _homeKey = GlobalKey();
+  final GlobalKey _aboutKey = GlobalKey();
+  final GlobalKey _skillsKey = GlobalKey();
+  final GlobalKey _experienceKey = GlobalKey();
+  final GlobalKey _projectsKey = GlobalKey();
+  final GlobalKey _contactKey = GlobalKey();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToSection(GlobalKey key) {
+    final context = key.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +47,47 @@ class MainLayout extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          if (isDesktop) const TopNavigationBar(),
-          Expanded(child: child),
+          if (isDesktop)
+            TopNavigationBar(
+              onNavTap: (index) {
+                switch (index) {
+                  case 0:
+                    _scrollToSection(_homeKey);
+                    break;
+                  case 1:
+                    _scrollToSection(_aboutKey);
+                    break;
+                  case 2:
+                    _scrollToSection(_skillsKey);
+                    break;
+                  case 3:
+                    _scrollToSection(_experienceKey);
+                    break;
+                  case 4:
+                    _scrollToSection(_projectsKey);
+                    break;
+                  case 5:
+                    _scrollToSection(_contactKey);
+                    break;
+                }
+              },
+            ),
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  HomeScreen(key: _homeKey),
+                  AboutScreen(key: _aboutKey),
+                  SkillsScreen(key: _skillsKey),
+                  ExperienceScreen(key: _experienceKey),
+                  ProjectsScreen(key: _projectsKey),
+                  ContactScreen(key: _contactKey),
+                  const SizedBox(height: 50), // Bottom padding
+                ],
+              ),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: isDesktop
@@ -53,43 +125,29 @@ class MainLayout extends StatelessWidget {
                   label: 'Contact',
                 ),
               ],
-              selectedIndex: _calculateSelectedIndex(context),
-              onDestinationSelected: (int index) =>
-                  _onItemTapped(index, context),
+              onDestinationSelected: (int index) {
+                switch (index) {
+                  case 0:
+                    _scrollToSection(_homeKey);
+                    break;
+                  case 1:
+                    _scrollToSection(_aboutKey);
+                    break;
+                  case 2:
+                    _scrollToSection(_skillsKey);
+                    break;
+                  case 3:
+                    _scrollToSection(_experienceKey);
+                    break;
+                  case 4:
+                    _scrollToSection(_projectsKey);
+                    break;
+                  case 5:
+                    _scrollToSection(_contactKey);
+                    break;
+                }
+              },
             ),
     );
-  }
-
-  int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).uri.toString();
-    if (location.startsWith('/about')) return 1;
-    if (location.startsWith('/skills')) return 2;
-    if (location.startsWith('/experience')) return 3;
-    if (location.startsWith('/projects')) return 4;
-    if (location.startsWith('/contact')) return 5;
-    return 0;
-  }
-
-  void _onItemTapped(int index, BuildContext context) {
-    switch (index) {
-      case 0:
-        context.go('/');
-        break;
-      case 1:
-        context.go('/about');
-        break;
-      case 2:
-        context.go('/skills');
-        break;
-      case 3:
-        context.go('/experience');
-        break;
-      case 4:
-        context.go('/projects');
-        break;
-      case 5:
-        context.go('/contact');
-        break;
-    }
   }
 }

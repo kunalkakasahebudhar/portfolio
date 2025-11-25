@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TopNavigationBar extends StatelessWidget {
-  const TopNavigationBar({super.key});
+  final Function(int) onNavTap;
+
+  const TopNavigationBar({super.key, required this.onNavTap});
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +44,17 @@ class TopNavigationBar extends StatelessWidget {
           // Navigation Items
           Row(
             children: [
-              _NavBarItem(label: 'Home', path: '/'),
+              _NavBarItem(label: 'Home', onTap: () => onNavTap(0)),
               const SizedBox(width: 8),
-              _NavBarItem(label: 'About', path: '/about'),
+              _NavBarItem(label: 'About', onTap: () => onNavTap(1)),
               const SizedBox(width: 8),
-              _NavBarItem(label: 'Skills', path: '/skills'),
+              _NavBarItem(label: 'Skills', onTap: () => onNavTap(2)),
               const SizedBox(width: 8),
-              _NavBarItem(label: 'Experience', path: '/experience'),
+              _NavBarItem(label: 'Experience', onTap: () => onNavTap(3)),
               const SizedBox(width: 8),
-              _NavBarItem(label: 'Projects', path: '/projects'),
+              _NavBarItem(label: 'Projects', onTap: () => onNavTap(4)),
               const SizedBox(width: 8),
-              _NavBarItem(label: 'Contact', path: '/contact'),
+              _NavBarItem(label: 'Contact', onTap: () => onNavTap(5)),
             ],
           ),
           const Spacer(),
@@ -94,9 +95,9 @@ class TopNavigationBar extends StatelessWidget {
 
 class _NavBarItem extends StatefulWidget {
   final String label;
-  final String path;
+  final VoidCallback onTap;
 
-  const _NavBarItem({required this.label, required this.path});
+  const _NavBarItem({required this.label, required this.onTap});
 
   @override
   State<_NavBarItem> createState() => _NavBarItemState();
@@ -107,23 +108,16 @@ class _NavBarItemState extends State<_NavBarItem> {
 
   @override
   Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).uri.toString();
-    final isSelected =
-        location == widget.path ||
-        (widget.path != '/' && location.startsWith(widget.path));
-
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
-        onTap: () => context.go(widget.path),
+        onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppTheme.accentColor.withValues(alpha: 0.1)
-                : _isHovered
+            color: _isHovered
                 ? Colors.white.withValues(alpha: 0.05)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
@@ -131,12 +125,8 @@ class _NavBarItemState extends State<_NavBarItem> {
           child: Text(
             widget.label,
             style: GoogleFonts.inter(
-              color: isSelected
-                  ? AppTheme.accentColor
-                  : _isHovered
-                  ? AppTheme.primaryText
-                  : AppTheme.secondaryText,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              color: _isHovered ? AppTheme.primaryText : AppTheme.secondaryText,
+              fontWeight: FontWeight.w500,
               fontSize: 14,
             ),
           ),

@@ -12,46 +12,43 @@ class ExperienceScreen extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: double.infinity,
       decoration: const BoxDecoration(color: AppTheme.background),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? size.width * 0.1 : 24,
-            vertical: 60,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Experience',
-                style: Theme.of(context).textTheme.displayMedium,
-              ).animate().fadeIn().slideX(),
-              const SizedBox(height: 40),
-              _buildExperienceItem(
-                context,
-                company: 'MHTECHIN',
-                role: 'Junior Flutter Developer',
-                period: 'Sept 2025 - Present',
-                description:
-                    'Developing cross-platform mobile applications using Flutter. Collaborating with the design and backend teams to deliver high-quality products.',
-                isFirst: true,
-                isLast: false,
-                delay: 200,
-              ),
-              _buildExperienceItem(
-                context,
-                company: 'Internship + Full-Time',
-                role: 'Android Developer',
-                period: 'June - Aug',
-                description:
-                    'Worked on native Android development using Kotlin/Java. Assisted in bug fixing and feature implementation.',
-                isFirst: false,
-                isLast: true,
-                delay: 400,
-              ),
-            ],
-          ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? size.width * 0.1 : 24,
+          vertical: 60,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Experience',
+              style: Theme.of(context).textTheme.displayMedium,
+            ).animate().fadeIn().slideX(),
+            const SizedBox(height: 40),
+            _buildExperienceItem(
+              context,
+              company: 'MHTECHIN',
+              role: 'Junior Flutter Developer',
+              period: 'Sept 2025 - Present',
+              description:
+                  'Developing cross-platform mobile applications using Flutter. Collaborating with the design and backend teams to deliver high-quality products.',
+              isFirst: true,
+              isLast: false,
+              delay: 200,
+            ),
+            _buildExperienceItem(
+              context,
+              company: 'Internship + Full-Time',
+              role: 'Android Developer',
+              period: 'June - Aug',
+              description:
+                  'Worked on native Android development using Kotlin/Java. Assisted in bug fixing and feature implementation.',
+              isFirst: false,
+              isLast: true,
+              delay: 400,
+            ),
+          ],
         ),
       ),
     );

@@ -13,43 +13,40 @@ class AboutScreen extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: double.infinity,
       decoration: const BoxDecoration(color: AppTheme.background),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? size.width * 0.1 : 24,
-            vertical: 60,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'About Me',
-                style: Theme.of(context).textTheme.displayMedium,
-              ).animate().fadeIn().slideX(),
-              const SizedBox(height: 40),
-              if (isDesktop)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 2, child: _buildBio(context)),
-                    const SizedBox(width: 60),
-                    Expanded(flex: 1, child: _buildProfileImage()),
-                  ],
-                )
-              else
-                Column(
-                  children: [
-                    _buildProfileImage(),
-                    const SizedBox(height: 40),
-                    _buildBio(context),
-                  ],
-                ),
-              const SizedBox(height: 60),
-              _buildInfoCards(context, isDesktop),
-            ],
-          ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? size.width * 0.1 : 24,
+          vertical: 60,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'About Me',
+              style: Theme.of(context).textTheme.displayMedium,
+            ).animate().fadeIn().slideX(),
+            const SizedBox(height: 40),
+            if (isDesktop)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 2, child: _buildBio(context)),
+                  const SizedBox(width: 60),
+                  Expanded(flex: 1, child: _buildProfileImage()),
+                ],
+              )
+            else
+              Column(
+                children: [
+                  _buildProfileImage(),
+                  const SizedBox(height: 40),
+                  _buildBio(context),
+                ],
+              ),
+            const SizedBox(height: 60),
+            _buildInfoCards(context, isDesktop),
+          ],
         ),
       ),
     );

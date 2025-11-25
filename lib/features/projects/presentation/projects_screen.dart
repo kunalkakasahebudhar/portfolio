@@ -14,74 +14,71 @@ class ProjectsScreen extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: double.infinity,
       decoration: const BoxDecoration(color: AppTheme.background),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? size.width * 0.1 : 24,
-            vertical: 60,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Projects',
-                style: Theme.of(context).textTheme.displayMedium,
-              ).animate().fadeIn().slideX(),
-              const SizedBox(height: 40),
-              Wrap(
-                spacing: 24,
-                runSpacing: 24,
-                children: [
-                  _ProjectCard(
-                    title: 'E-Commerce App',
-                    description:
-                        'A full-featured shopping app with cart, payment integration, and order tracking.',
-                    techStack: const ['Flutter', 'Firebase', 'Stripe'],
-                    color: Colors.blueAccent,
-                    width: isDesktop
-                        ? (size.width * 0.8 - 48) / 3
-                        : double.infinity,
-                    delay: 200,
-                  ),
-                  _ProjectCard(
-                    title: 'Task Manager',
-                    description:
-                        'Productivity app for managing daily tasks with reminders and categories.',
-                    techStack: const ['Flutter', 'Hive', 'Riverpod'],
-                    color: Colors.purpleAccent,
-                    width: isDesktop
-                        ? (size.width * 0.8 - 48) / 3
-                        : double.infinity,
-                    delay: 400,
-                  ),
-                  _ProjectCard(
-                    title: 'Weather Forecast',
-                    description:
-                        'Real-time weather updates using OpenWeatherMap API with beautiful animations.',
-                    techStack: const ['Flutter', 'REST API', 'Bloc'],
-                    color: Colors.orangeAccent,
-                    width: isDesktop
-                        ? (size.width * 0.8 - 48) / 3
-                        : double.infinity,
-                    delay: 600,
-                  ),
-                  _ProjectCard(
-                    title: 'Social Media Dashboard',
-                    description:
-                        'Analytics dashboard for social media accounts with charts and graphs.',
-                    techStack: const ['Flutter Web', 'Chart.js', 'Go'],
-                    color: Colors.tealAccent,
-                    width: isDesktop
-                        ? (size.width * 0.8 - 48) / 3
-                        : double.infinity,
-                    delay: 800,
-                  ),
-                ],
-              ),
-            ],
-          ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? size.width * 0.1 : 24,
+          vertical: 60,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Projects',
+              style: Theme.of(context).textTheme.displayMedium,
+            ).animate().fadeIn().slideX(),
+            const SizedBox(height: 40),
+            Wrap(
+              spacing: 24,
+              runSpacing: 24,
+              children: [
+                _ProjectCard(
+                  title: 'E-Commerce App',
+                  description:
+                      'A full-featured shopping app with cart, payment integration, and order tracking.',
+                  techStack: const ['Flutter', 'Firebase', 'Stripe'],
+                  color: Colors.blueAccent,
+                  width: isDesktop
+                      ? (size.width * 0.8 - 48) / 3
+                      : double.infinity,
+                  delay: 200,
+                ),
+                _ProjectCard(
+                  title: 'Task Manager',
+                  description:
+                      'Productivity app for managing daily tasks with reminders and categories.',
+                  techStack: const ['Flutter', 'Hive', 'Riverpod'],
+                  color: Colors.purpleAccent,
+                  width: isDesktop
+                      ? (size.width * 0.8 - 48) / 3
+                      : double.infinity,
+                  delay: 400,
+                ),
+                _ProjectCard(
+                  title: 'Weather Forecast',
+                  description:
+                      'Real-time weather updates using OpenWeatherMap API with beautiful animations.',
+                  techStack: const ['Flutter', 'REST API', 'Bloc'],
+                  color: Colors.orangeAccent,
+                  width: isDesktop
+                      ? (size.width * 0.8 - 48) / 3
+                      : double.infinity,
+                  delay: 600,
+                ),
+                _ProjectCard(
+                  title: 'Social Media Dashboard',
+                  description:
+                      'Analytics dashboard for social media accounts with charts and graphs.',
+                  techStack: const ['Flutter Web', 'Chart.js', 'Go'],
+                  color: Colors.tealAccent,
+                  width: isDesktop
+                      ? (size.width * 0.8 - 48) / 3
+                      : double.infinity,
+                  delay: 800,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

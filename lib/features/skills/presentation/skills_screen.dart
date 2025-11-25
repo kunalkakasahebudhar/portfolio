@@ -12,44 +12,41 @@ class SkillsScreen extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: double.infinity,
       decoration: const BoxDecoration(color: AppTheme.background),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? size.width * 0.1 : 24,
-            vertical: 60,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Skills',
-                style: Theme.of(context).textTheme.displayMedium,
-              ).animate().fadeIn().slideX(),
-              const SizedBox(height: 40),
-              _buildSkillCategory(context, 'Mobile Development', [
-                'Flutter',
-                'Dart',
-                'Android Development',
-                'Mobile App Development',
-              ], delay: 200),
-              const SizedBox(height: 32),
-              _buildSkillCategory(context, 'Backend & Database', [
-                'MongoDB',
-                'Go (Golang - Learning)',
-                'REST APIs',
-              ], delay: 400),
-              const SizedBox(height: 32),
-              _buildSkillCategory(context, 'Tools & Concepts', [
-                'Postman (API Testing)',
-                'UI/UX Implementation',
-                'State Management',
-                'Git',
-                'Clean Architecture',
-              ], delay: 600),
-            ],
-          ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? size.width * 0.1 : 24,
+          vertical: 60,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Skills',
+              style: Theme.of(context).textTheme.displayMedium,
+            ).animate().fadeIn().slideX(),
+            const SizedBox(height: 40),
+            _buildSkillCategory(context, 'Mobile Development', [
+              'Flutter',
+              'Dart',
+              'Android Development',
+              'Mobile App Development',
+            ], delay: 200),
+            const SizedBox(height: 32),
+            _buildSkillCategory(context, 'Backend & Database', [
+              'MongoDB',
+              'Go (Golang - Learning)',
+              'REST APIs',
+            ], delay: 400),
+            const SizedBox(height: 32),
+            _buildSkillCategory(context, 'Tools & Concepts', [
+              'Postman (API Testing)',
+              'UI/UX Implementation',
+              'State Management',
+              'Git',
+              'Clean Architecture',
+            ], delay: 600),
+          ],
         ),
       ),
     );
