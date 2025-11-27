@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,6 +27,8 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 40),
+
+            /// Hello Line
             Text(
               'Hello, I\'m',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -36,7 +37,10 @@ class HomeScreen extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ).animate().fadeIn(duration: 600.ms).slideX(begin: -0.2, end: 0),
+
             const SizedBox(height: 16),
+
+            /// Name
             Text(
                   'Kunal Udhar',
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
@@ -47,7 +51,10 @@ class HomeScreen extends StatelessWidget {
                 .animate()
                 .fadeIn(delay: 200.ms, duration: 600.ms)
                 .slideX(begin: -0.2, end: 0),
+
             const SizedBox(height: 16),
+
+            /// Title
             Text(
                   'Mobile Application Developer\nAndroid & Flutter',
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
@@ -58,7 +65,10 @@ class HomeScreen extends StatelessWidget {
                 .animate()
                 .fadeIn(delay: 400.ms, duration: 600.ms)
                 .slideX(begin: -0.2, end: 0),
+
             const SizedBox(height: 24),
+
+            /// Subtitle
             Text(
                   'Building Modern Mobile Experiences',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -69,7 +79,10 @@ class HomeScreen extends StatelessWidget {
                 .animate()
                 .fadeIn(delay: 600.ms, duration: 600.ms)
                 .slideX(begin: -0.2, end: 0),
+
             const SizedBox(height: 48),
+
+            /// Buttons
             Wrap(
                   spacing: 20,
                   runSpacing: 20,
@@ -106,7 +119,10 @@ class HomeScreen extends StatelessWidget {
                 .animate()
                 .fadeIn(delay: 800.ms, duration: 600.ms)
                 .slideY(begin: 0.2, end: 0),
+
             const SizedBox(height: 80),
+
+            /// Social Links
             _buildSocialLinks().animate().fadeIn(
               delay: 1000.ms,
               duration: 600.ms,
@@ -122,12 +138,13 @@ class HomeScreen extends StatelessWidget {
       children: [
         _SocialIcon(
           icon: FontAwesomeIcons.github,
-          onTap: () => _launchUrl('https://github.com/kudhar892'),
+          onTap: () => _launchUrl('https://github.com/kunalkakasahebudhar'),
         ),
         const SizedBox(width: 24),
         _SocialIcon(
           icon: FontAwesomeIcons.linkedin,
-          onTap: () => _launchUrl('https://linkedin.com/in/kunal-udhar'),
+          onTap: () =>
+              _launchUrl('https://www.linkedin.com/in/kunal-udhar-99a6ba32b/'),
         ),
         const SizedBox(width: 24),
         _SocialIcon(
@@ -145,6 +162,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+/// SOCIAL ICON WIDGET
 class _SocialIcon extends StatefulWidget {
   final IconData icon;
   final VoidCallback onTap;
