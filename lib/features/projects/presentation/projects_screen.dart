@@ -4,13 +4,75 @@ import 'package:portfolio/core/theme/theme.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ProjectsScreen extends StatelessWidget {
+class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key});
+
+  @override
+  State<ProjectsScreen> createState() => _ProjectsScreenState();
+}
+
+class _ProjectsScreenState extends State<ProjectsScreen> {
+  String _selectedCategory = 'All Projects';
+
+  final List<String> _categories = [
+    'All Projects',
+    'Personal Projects',
+    'Client Projects',
+  ];
+
+  final List<Project> _projects = [
+    Project(
+      title: 'E-Commerce App',
+      description:
+          'A full-featured shopping app with cart, payment integration, and order tracking.',
+      techStack: const ['Flutter', 'Firebase', 'Stripe'],
+      color: Colors.blueAccent,
+      category: 'Client Projects',
+      status: 'Completed',
+      delay: 200,
+    ),
+    Project(
+      title: 'Task Manager',
+      description:
+          'Productivity app for managing daily tasks with reminders and categories.',
+      techStack: const ['Flutter', 'Hive', 'Riverpod'],
+      color: Colors.purpleAccent,
+      category: 'Personal Projects',
+      status: 'Pending',
+      delay: 400,
+    ),
+    Project(
+      title: 'Weather Forecast',
+      description:
+          'Real-time weather updates using OpenWeatherMap API with beautiful animations.',
+      techStack: const ['Flutter', 'REST API', 'Bloc'],
+      color: Colors.orangeAccent,
+      category: 'Personal Projects',
+      status: 'Completed',
+      delay: 600,
+    ),
+    Project(
+      title: 'Social Media Dashboard',
+      description:
+          'Analytics dashboard for social media accounts with charts and graphs.',
+      techStack: const ['Flutter Web', 'Chart.js', 'Go'],
+      color: Colors.tealAccent,
+      category: 'Client Projects',
+      status: 'Coming Soon',
+      delay: 800,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 900;
+
+    final filteredProjects = _selectedCategory == 'All Projects'
+        ? _projects
+        : _projects
+              .where((project) => project.category == _selectedCategory)
+              .toList();
 
     return Container(
       width: double.infinity,
@@ -28,55 +90,68 @@ class ProjectsScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.displayMedium,
             ).animate().fadeIn().slideX(),
             const SizedBox(height: 40),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _categories.map((category) {
+                  final isSelected = _selectedCategory == category;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: InkWell(
+                      onTap: () => setState(() => _selectedCategory = category),
+                      borderRadius: BorderRadius.circular(30),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppTheme.accentColor
+                              : AppTheme.cardColor,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppTheme.accentColor
+                                : Colors.white.withValues(alpha: 0.1),
+                          ),
+                        ),
+                        child: Text(
+                          category,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                color: isSelected
+                                    ? Colors.white
+                                    : AppTheme.secondaryText,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ).animate().fadeIn(delay: 100.ms).slideX(),
+            const SizedBox(height: 40),
             Wrap(
               spacing: 24,
               runSpacing: 24,
-              children: [
-                _ProjectCard(
-                  title: 'E-Commerce App',
-                  description:
-                      'A full-featured shopping app with cart, payment integration, and order tracking.',
-                  techStack: const ['Flutter', 'Firebase', 'Stripe'],
-                  color: Colors.blueAccent,
+              children: filteredProjects.map((project) {
+                return _ProjectCard(
+                  title: project.title,
+                  description: project.description,
+                  techStack: project.techStack,
+                  color: project.color,
+                  status: project.status,
                   width: isDesktop
                       ? (size.width * 0.8 - 48) / 3
                       : double.infinity,
-                  delay: 200,
-                ),
-                _ProjectCard(
-                  title: 'Task Manager',
-                  description:
-                      'Productivity app for managing daily tasks with reminders and categories.',
-                  techStack: const ['Flutter', 'Hive', 'Riverpod'],
-                  color: Colors.purpleAccent,
-                  width: isDesktop
-                      ? (size.width * 0.8 - 48) / 3
-                      : double.infinity,
-                  delay: 400,
-                ),
-                _ProjectCard(
-                  title: 'Weather Forecast',
-                  description:
-                      'Real-time weather updates using OpenWeatherMap API with beautiful animations.',
-                  techStack: const ['Flutter', 'REST API', 'Bloc'],
-                  color: Colors.orangeAccent,
-                  width: isDesktop
-                      ? (size.width * 0.8 - 48) / 3
-                      : double.infinity,
-                  delay: 600,
-                ),
-                _ProjectCard(
-                  title: 'Social Media Dashboard',
-                  description:
-                      'Analytics dashboard for social media accounts with charts and graphs.',
-                  techStack: const ['Flutter Web', 'Chart.js', 'Go'],
-                  color: Colors.tealAccent,
-                  width: isDesktop
-                      ? (size.width * 0.8 - 48) / 3
-                      : double.infinity,
-                  delay: 800,
-                ),
-              ],
+                  delay: project.delay,
+                );
+              }).toList(),
             ),
           ],
         ),
@@ -85,11 +160,32 @@ class ProjectsScreen extends StatelessWidget {
   }
 }
 
+class Project {
+  final String title;
+  final String description;
+  final List<String> techStack;
+  final Color color;
+  final String category;
+  final String status;
+  final int delay;
+
+  Project({
+    required this.title,
+    required this.description,
+    required this.techStack,
+    required this.color,
+    required this.category,
+    required this.status,
+    required this.delay,
+  });
+}
+
 class _ProjectCard extends StatefulWidget {
   final String title;
   final String description;
   final List<String> techStack;
   final Color color;
+  final String status;
   final double width;
   final int delay;
 
@@ -98,6 +194,7 @@ class _ProjectCard extends StatefulWidget {
     required this.description,
     required this.techStack,
     required this.color,
+    required this.status,
     required this.width,
     required this.delay,
   });
@@ -125,7 +222,7 @@ class _ProjectCardState extends State<_ProjectCard> {
             color: _isHovered
                 ? widget.color
                 : Colors.white.withValues(alpha: 0.05),
-            width: _isHovered ? 2 : 1,
+            width: 2,
           ),
           boxShadow: [
             if (_isHovered)
@@ -147,8 +244,41 @@ class _ProjectCardState extends State<_ProjectCard> {
                 color: widget.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Center(
-                child: Icon(Icons.folder_open, size: 64, color: widget.color),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Icon(
+                      Icons.folder_open,
+                      size: 64,
+                      color: widget.color,
+                    ),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.1),
+                        ),
+                      ),
+                      child: Text(
+                        widget.status,
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),

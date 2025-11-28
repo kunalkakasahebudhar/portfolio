@@ -68,7 +68,10 @@ class AboutScreen extends StatelessWidget {
         ],
         border: Border.all(color: AppTheme.accentColor.withValues(alpha: 0.2)),
       ),
-      child: const Icon(Icons.person, size: 100, color: AppTheme.secondaryText),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Image.asset('assets/images/profile_pic.png', fit: BoxFit.cover),
+      ),
     ).animate().fadeIn(delay: 200.ms).scale();
   }
 
@@ -107,7 +110,7 @@ class AboutScreen extends StatelessWidget {
           title: 'Education',
           icon: Icons.school_outlined,
           items: const [
-            'Bachelor of Computer Applications',
+            'Polytechnic Diploma in Computer Science',
             'Certified Flutter Developer',
           ],
           width: isDesktop ? 400 : double.infinity,
