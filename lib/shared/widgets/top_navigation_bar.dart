@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/theme/theme.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TopNavigationBar extends StatelessWidget {
   final Function(int) onNavTap;
@@ -58,38 +57,9 @@ class TopNavigationBar extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          // Right Side Actions
-          ElevatedButton(
-            onPressed: () => _launchUrl('mailto:kudhar892@gmail.com'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.accentColor,
-              foregroundColor: Colors.black,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: const Text('Hire Me'),
-          ),
-          const SizedBox(width: 16),
-          IconButton(
-            onPressed: () {
-              // TODO: Implement settings
-            },
-            icon: const Icon(
-              Icons.settings_outlined,
-              color: AppTheme.secondaryText,
-            ),
-          ),
         ],
       ),
     );
-  }
-
-  Future<void> _launchUrl(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw Exception('Could not launch $url');
-    }
   }
 }
 

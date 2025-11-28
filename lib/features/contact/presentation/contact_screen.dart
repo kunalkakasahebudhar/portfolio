@@ -186,55 +186,49 @@ class _ContactFormState extends State<_ContactForm> {
     super.dispose();
   }
 
-  String? _encodeQueryParameters(Map<String, String> params) {
-    return params.entries
-        .map(
-          (e) =>
-              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
-        )
-        .join('&');
-  }
-
   Future<void> _sendEmail() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
-    final name = _nameController.text;
-    final email = _emailController.text;
-    final message = _messageController.text;
-
-    final String subject = 'New Portfolio Contact from $name';
-    final String body = 'Name: $name\nEmail: $email\n\nMessage:\n$message';
-
-    final Uri emailLaunchUri = Uri(
-      scheme: 'mailto',
-      path: 'kudhar892@gmail.com',
-      query: _encodeQueryParameters(<String, String>{
-        'subject': subject,
-        'body': body,
-      }),
-    );
-
     try {
-      if (await canLaunchUrl(emailLaunchUri)) {
-        await launchUrl(emailLaunchUri);
-      } else {
+      final name = _nameController.text.trim();
+      final email = _emailController.text.trim();
+      final message = _messageController.text.trim();
+
+      final emailBody = Uri.encodeComponent(
+        'Name: $name\nEmail: $email\n\nMessage:\n$message',
+      );
+      final mailtoUrl =
+          'mailto:kudhar892@gmail.com?subject=Portfolio Contact from $name&body=$emailBody';
+
+      if (await launchUrl(Uri.parse(mailtoUrl))) {
         if (mounted) {
+          // Clear form fields
+          _nameController.clear();
+          _emailController.clear();
+          _messageController.clear();
+
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Could not open email app'),
-              backgroundColor: Colors.red,
+              content: Text(
+                'Opening your email client... Please send the email to complete your message.',
+              ),
+              backgroundColor: Colors.blue,
+              duration: Duration(seconds: 4),
             ),
           );
         }
+      } else {
+        throw Exception('Could not launch email client');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not open email app'),
+          SnackBar(
+            content: Text('Could not open email client: ${e.toString()}'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -326,13 +320,20 @@ class _ContactFormState extends State<_ContactForm> {
                   foregroundColor: Colors.white,
                 ),
                 child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(width: 12),
+                          Text('Opening...'),
+                        ],
                       )
                     : const Text('Send Message'),
               ),
