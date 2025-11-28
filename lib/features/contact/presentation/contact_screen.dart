@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:portfolio/features/contact/domain/contact_model.dart';
+import 'package:portfolio/features/contact/data/contact_api_service.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
@@ -175,68 +177,142 @@ class _ContactFormState extends State<_ContactForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _subjectController = TextEditingController();
   final _messageController = TextEditingController();
+  final _apiService = ContactApiService();
   bool _isLoading = false;
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
+    _subjectController.dispose();
     _messageController.dispose();
     super.dispose();
   }
 
-  Future<void> _sendEmail() async {
+  Future<void> _sendMessage() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final name = _nameController.text.trim();
-      final email = _emailController.text.trim();
-      final message = _messageController.text.trim();
-
-      final emailBody = Uri.encodeComponent(
-        'Name: $name\nEmail: $email\n\nMessage:\n$message',
+      // Create contact model
+      final contact = ContactModel(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        subject: _subjectController.text.trim().isEmpty
+            ? null
+            : _subjectController.text.trim(),
+        message: _messageController.text.trim(),
       );
-      final mailtoUrl =
-          'mailto:kudhar892@gmail.com?subject=Portfolio Contact from $name&body=$emailBody';
 
-      if (await launchUrl(Uri.parse(mailtoUrl))) {
-        if (mounted) {
-          // Clear form fields
+      // Send to API
+      final response = await _apiService.sendContactMessageDetailed(contact);
+
+      if (mounted) {
+        if (response.success) {
+          // Clear form
           _nameController.clear();
           _emailController.clear();
+          _subjectController.clear();
           _messageController.clear();
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                'Opening your email client... Please send the email to complete your message.',
-              ),
-              backgroundColor: Colors.blue,
-              duration: Duration(seconds: 4),
-            ),
-          );
+          // Show success dialog
+          _showSuccessDialog(response.message);
+        } else {
+          // Show error dialog
+          _showErrorDialog(response.message);
         }
-      } else {
-        throw Exception('Could not launch email client');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Could not open email client: ${e.toString()}'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        _showErrorDialog(e.toString());
       }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showSuccessDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.green.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 32,
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Text(
+              'Success!',
+              style: TextStyle(color: AppTheme.primaryText),
+            ),
+          ],
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(color: AppTheme.secondaryText),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 32,
+              ),
+            ),
+            const SizedBox(width: 16),
+            const Text('Error', style: TextStyle(color: AppTheme.primaryText)),
+          ],
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(color: AppTheme.secondaryText),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -295,6 +371,12 @@ class _ContactFormState extends State<_ContactForm> {
             ),
             const SizedBox(height: 16),
             _buildTextField(
+              label: 'Subject (Optional)',
+              hint: 'Message subject',
+              controller: _subjectController,
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
               label: 'Message',
               hint: 'Write your message here...',
               controller: _messageController,
@@ -313,11 +395,14 @@ class _ContactFormState extends State<_ContactForm> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _sendEmail,
+                onPressed: _isLoading ? null : _sendMessage,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppTheme.accentColor,
                   foregroundColor: Colors.white,
+                  disabledBackgroundColor: AppTheme.accentColor.withValues(
+                    alpha: 0.5,
+                  ),
                 ),
                 child: _isLoading
                     ? Row(
@@ -332,7 +417,7 @@ class _ContactFormState extends State<_ContactForm> {
                             ),
                           ),
                           SizedBox(width: 12),
-                          Text('Opening...'),
+                          Text('Sending...'),
                         ],
                       )
                     : const Text('Send Message'),

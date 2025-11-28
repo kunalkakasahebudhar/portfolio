@@ -51,7 +51,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       title: 'Portfolio Website',
       description:
           'Personal portfolio website showcasing skills, projects, and experience.',
-      techStack: const ['Flutter Web', 'Responsive Design'],
+      techStack: const ['Flutter Web', 'Responsive Design', 'Go (Backend)'],
       color: Colors.tealAccent,
       category: 'Personal Projects',
       status: 'Completed',
