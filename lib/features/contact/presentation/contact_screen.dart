@@ -79,14 +79,15 @@ class ContactScreen extends StatelessWidget {
           icon: FontAwesomeIcons.linkedin,
           title: 'LinkedIn',
           content: 'linkedin.com/in/kunal-udhar',
-          onTap: () => _launchUrl('https://linkedin.com/in/kunal-udhar'),
+          onTap: () =>
+              _launchUrl('https://www.linkedin.com/in/kunal-udhar-99a6ba32b/'),
         ),
         const SizedBox(height: 24),
         _ContactItem(
           icon: FontAwesomeIcons.github,
           title: 'GitHub',
-          content: 'github.com/kudhar892',
-          onTap: () => _launchUrl('https://github.com/kudhar892'),
+          content: 'github.com/kunalkakasahebudhar',
+          onTap: () => _launchUrl('https://github.com/kunalkakasahebudhar'),
         ),
       ],
     ).animate().fadeIn(delay: 200.ms).slideX();
