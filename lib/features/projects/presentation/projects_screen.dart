@@ -18,7 +18,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   final List<String> _categories = [
     'All Projects',
     'Personal Projects',
-    'Achievement / Certification',
+    'Website',
   ];
 
   final List<Project> _projects = [
@@ -32,6 +32,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       status: 'Completed',
       githubUrl:
           'https://github.com/kunalkakasahebudhar/Expense-Tracker-App.git',
+      liveUrl: null,
       delay: 200,
     ),
     Project(
@@ -43,6 +44,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       category: 'Personal Projects',
       status: 'Completed',
       githubUrl: 'https://github.com/kunalkakasahebudhar/E-Commerce-app.git',
+      liveUrl: null,
       delay: 400,
     ),
     Project(
@@ -54,6 +56,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       category: 'Personal Projects',
       status: 'Completed',
       githubUrl: 'https://github.com/kunalkakasahebudhar/portfolio.git',
+      liveUrl: null,
       delay: 600,
     ),
     Project(
@@ -65,7 +68,19 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       category: 'Personal Projects',
       status: 'Pending',
       githubUrl: null,
+      liveUrl: null,
       delay: 800,
+    ),
+    Project(
+      title: 'Web Hosting',
+      description: 'A demo website for web hosting services.',
+      techStack: const ['Html', 'CSS', 'JavaScript'],
+      color: Colors.indigoAccent,
+      category: 'Website',
+      status: 'Completed',
+      githubUrl: 'https://github.com/kunalkakasahebudhar/web_hosting.git',
+      liveUrl: 'https://ecommerce-website-kappa-ecru.vercel.app',
+      delay: 1000,
     ),
   ];
 
@@ -153,6 +168,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                   color: project.color,
                   status: project.status,
                   githubUrl: project.githubUrl,
+                  liveUrl: project.liveUrl,
                   width: isDesktop
                       ? (size.width * 0.8 - 48) / 3
                       : double.infinity,
@@ -175,6 +191,7 @@ class Project {
   final String category;
   final String status;
   final String? githubUrl;
+  final String? liveUrl;
   final int delay;
 
   Project({
@@ -185,6 +202,7 @@ class Project {
     required this.category,
     required this.status,
     required this.githubUrl,
+    required this.liveUrl,
     required this.delay,
   });
 }
@@ -196,6 +214,7 @@ class _ProjectCard extends StatefulWidget {
   final Color color;
   final String status;
   final String? githubUrl;
+  final String? liveUrl;
   final double width;
   final int delay;
 
@@ -206,6 +225,7 @@ class _ProjectCard extends StatefulWidget {
     required this.color,
     required this.status,
     required this.githubUrl,
+    required this.liveUrl,
     required this.width,
     required this.delay,
   });
@@ -333,40 +353,77 @@ class _ProjectCardState extends State<_ProjectCard> {
                   .toList(),
             ),
             const SizedBox(height: 24),
-            if (widget.githubUrl != null)
-              ElevatedButton.icon(
-                onPressed: () async {
-                  if (!await launchUrl(Uri.parse(widget.githubUrl!))) {
-                    throw Exception('Could not launch ${widget.githubUrl}');
-                  }
-                },
-                icon: const FaIcon(FontAwesomeIcons.github, size: 16),
-                label: const Text('View on GitHub'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.background,
-                  foregroundColor: AppTheme.primaryText,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+            Row(
+              children: [
+                if (widget.githubUrl != null)
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        if (!await launchUrl(Uri.parse(widget.githubUrl!))) {
+                          throw Exception(
+                            'Could not launch ${widget.githubUrl}',
+                          );
+                        }
+                      },
+                      icon: const FaIcon(FontAwesomeIcons.github, size: 16),
+                      label: const Text('GitHub'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.background,
+                        foregroundColor: AppTheme.primaryText,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: null,
+                      icon: const Icon(Icons.lock_outline, size: 16),
+                      label: const Text('Private'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.background.withValues(
+                          alpha: 0.5,
+                        ),
+                        foregroundColor: AppTheme.secondaryText,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              )
-            else
-              ElevatedButton.icon(
-                onPressed: null,
-                icon: const Icon(Icons.lock_outline, size: 16),
-                label: const Text('Private Repository'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.background.withValues(alpha: 0.5),
-                  foregroundColor: AppTheme.secondaryText,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+                if (widget.liveUrl != null) ...[
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        if (!await launchUrl(Uri.parse(widget.liveUrl!))) {
+                          throw Exception('Could not launch ${widget.liveUrl}');
+                        }
+                      },
+                      icon: const Icon(Icons.language, size: 16),
+                      label: const Text('Live'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.accentColor.withValues(
+                          alpha: 0.1,
+                        ),
+                        foregroundColor: AppTheme.accentColor,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                ],
+              ],
+            ),
           ],
         ),
       ),
