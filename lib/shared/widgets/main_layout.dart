@@ -6,6 +6,8 @@ import 'package:portfolio/features/home/presentation/home_screen.dart';
 import 'package:portfolio/features/projects/presentation/projects_screen.dart';
 import 'package:portfolio/features/skills/presentation/skills_screen.dart';
 import 'package:portfolio/shared/widgets/top_navigation_bar.dart';
+import 'package:portfolio/shared/widgets/mobile_app_bar.dart';
+import 'package:portfolio/shared/widgets/mobile_drawer.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -45,6 +47,33 @@ class _MainLayoutState extends State<MainLayout> {
     final isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Scaffold(
+      appBar: isDesktop ? null : const MobileAppBar(),
+      drawer: isDesktop
+          ? null
+          : MobileDrawer(
+              onNavTap: (index) {
+                switch (index) {
+                  case 0:
+                    _scrollToSection(_homeKey);
+                    break;
+                  case 1:
+                    _scrollToSection(_aboutKey);
+                    break;
+                  case 2:
+                    _scrollToSection(_skillsKey);
+                    break;
+                  case 3:
+                    _scrollToSection(_experienceKey);
+                    break;
+                  case 4:
+                    _scrollToSection(_projectsKey);
+                    break;
+                  case 5:
+                    _scrollToSection(_contactKey);
+                    break;
+                }
+              },
+            ),
       body: Column(
         children: [
           if (isDesktop)
@@ -93,64 +122,6 @@ class _MainLayoutState extends State<MainLayout> {
           ),
         ],
       ),
-      bottomNavigationBar: isDesktop
-          ? null
-          : NavigationBar(
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.home_outlined),
-                  selectedIcon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
-                  label: 'About',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.code),
-                  selectedIcon: Icon(Icons.code),
-                  label: 'Skills',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.work_outline),
-                  selectedIcon: Icon(Icons.work),
-                  label: 'Exp',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.folder_open),
-                  selectedIcon: Icon(Icons.folder),
-                  label: 'Projects',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.mail_outline),
-                  selectedIcon: Icon(Icons.mail),
-                  label: 'Contact',
-                ),
-              ],
-              onDestinationSelected: (int index) {
-                switch (index) {
-                  case 0:
-                    _scrollToSection(_homeKey);
-                    break;
-                  case 1:
-                    _scrollToSection(_aboutKey);
-                    break;
-                  case 2:
-                    _scrollToSection(_skillsKey);
-                    break;
-                  case 3:
-                    _scrollToSection(_experienceKey);
-                    break;
-                  case 4:
-                    _scrollToSection(_projectsKey);
-                    break;
-                  case 5:
-                    _scrollToSection(_contactKey);
-                    break;
-                }
-              },
-            ),
     );
   }
 }
