@@ -77,7 +77,10 @@ class _MainLayoutState extends State<MainLayout> {
               controller: _scrollController,
               child: Column(
                 children: [
-                  HomeScreen(key: _homeKey),
+                  HomeScreen(
+                    key: _homeKey,
+                    onViewProjects: () => _scrollToSection(_projectsKey),
+                  ),
                   AboutScreen(key: _aboutKey),
                   SkillsScreen(key: _skillsKey),
                   ExperienceScreen(key: _experienceKey),

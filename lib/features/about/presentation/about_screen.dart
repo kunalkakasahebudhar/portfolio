@@ -101,8 +101,8 @@ class AboutScreen extends StatelessWidget {
           title: 'Experience',
           icon: Icons.work_outline,
           items: const [
-            'Junior Flutter Developer @ MHTECHIN',
-            'Android Developer Intern',
+            'Junior Flutter Developer At MHTECHIN',
+            'Android Developer Intern At MHTECHIN',
           ],
           width: isDesktop ? 400 : double.infinity,
         ),

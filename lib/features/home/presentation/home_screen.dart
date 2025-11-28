@@ -6,7 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final VoidCallback? onViewProjects;
+
+  const HomeScreen({super.key, this.onViewProjects});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                   runSpacing: 20,
                   children: [
                     ElevatedButton(
-                      onPressed: () => context.go('/projects'),
+                      onPressed: onViewProjects,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 32,
@@ -99,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     OutlinedButton(
                       onPressed: () {
-                        // TODO: Add resume link
+                        _launchUrl('assets/resume/kunalCV.pdf');
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
