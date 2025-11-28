@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:portfolio/core/theme/theme.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key});
@@ -17,48 +18,53 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   final List<String> _categories = [
     'All Projects',
     'Personal Projects',
-    'Client Projects',
+    'Achievement / Certification',
   ];
 
   final List<Project> _projects = [
     Project(
-      title: 'E-Commerce App',
+      title: 'Expense Tracker App',
       description:
-          'A full-featured shopping app with cart, payment integration, and order tracking.',
-      techStack: const ['Flutter', 'Firebase', 'Stripe'],
-      color: Colors.blueAccent,
-      category: 'Client Projects',
-      status: 'Completed',
-      delay: 200,
-    ),
-    Project(
-      title: 'Task Manager',
-      description:
-          'Productivity app for managing daily tasks with reminders and categories.',
+          'A personal finance app to track expenses and income efficiently.',
       techStack: const ['Flutter', 'Hive', 'Riverpod'],
       color: Colors.purpleAccent,
       category: 'Personal Projects',
-      status: 'Pending',
+      status: 'Completed',
+      githubUrl:
+          'https://github.com/kunalkakasahebudhar/Expense-Tracker-App.git',
+      delay: 200,
+    ),
+    Project(
+      title: 'E-Commerce App',
+      description:
+          'A complete e-commerce solution for online shopping with cart and payment.',
+      techStack: const ['Flutter', 'Provider'],
+      color: Colors.blueAccent,
+      category: 'Personal Projects',
+      status: 'Completed',
+      githubUrl: 'https://github.com/kunalkakasahebudhar/E-Commerce-app.git',
       delay: 400,
     ),
     Project(
-      title: 'Weather Forecast',
+      title: 'Portfolio Website',
       description:
-          'Real-time weather updates using OpenWeatherMap API with beautiful animations.',
-      techStack: const ['Flutter', 'REST API', 'Bloc'],
-      color: Colors.orangeAccent,
+          'Personal portfolio website showcasing skills, projects, and experience.',
+      techStack: const ['Flutter Web', 'Responsive Design'],
+      color: Colors.tealAccent,
       category: 'Personal Projects',
       status: 'Completed',
+      githubUrl: 'https://github.com/kunalkakasahebudhar/portfolio.git',
       delay: 600,
     ),
     Project(
-      title: 'Social Media Dashboard',
+      title: 'BloodConnect',
       description:
-          'Analytics dashboard for social media accounts with charts and graphs.',
-      techStack: const ['Flutter Web', 'Chart.js', 'Go'],
-      color: Colors.tealAccent,
-      category: 'Client Projects',
-      status: 'Coming Soon',
+          'A platform connecting blood donors with those in need during emergencies.',
+      techStack: const ['Flutter', 'Firebase', 'Google Maps'],
+      color: Colors.redAccent,
+      category: 'Personal Projects',
+      status: 'Pending',
+      githubUrl: null,
       delay: 800,
     ),
   ];
@@ -146,6 +152,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                   techStack: project.techStack,
                   color: project.color,
                   status: project.status,
+                  githubUrl: project.githubUrl,
                   width: isDesktop
                       ? (size.width * 0.8 - 48) / 3
                       : double.infinity,
@@ -167,6 +174,7 @@ class Project {
   final Color color;
   final String category;
   final String status;
+  final String? githubUrl;
   final int delay;
 
   Project({
@@ -176,6 +184,7 @@ class Project {
     required this.color,
     required this.category,
     required this.status,
+    required this.githubUrl,
     required this.delay,
   });
 }
@@ -186,6 +195,7 @@ class _ProjectCard extends StatefulWidget {
   final List<String> techStack;
   final Color color;
   final String status;
+  final String? githubUrl;
   final double width;
   final int delay;
 
@@ -195,6 +205,7 @@ class _ProjectCard extends StatefulWidget {
     required this.techStack,
     required this.color,
     required this.status,
+    required this.githubUrl,
     required this.width,
     required this.delay,
   });
@@ -322,22 +333,40 @@ class _ProjectCardState extends State<_ProjectCard> {
                   .toList(),
             ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () {
-                // TODO: Add GitHub link
-              },
-              icon: const FaIcon(FontAwesomeIcons.github, size: 16),
-              label: const Text('View on GitHub'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.background,
-                foregroundColor: AppTheme.primaryText,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
+            if (widget.githubUrl != null)
+              ElevatedButton.icon(
+                onPressed: () async {
+                  if (!await launchUrl(Uri.parse(widget.githubUrl!))) {
+                    throw Exception('Could not launch ${widget.githubUrl}');
+                  }
+                },
+                icon: const FaIcon(FontAwesomeIcons.github, size: 16),
+                label: const Text('View on GitHub'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.background,
+                  foregroundColor: AppTheme.primaryText,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                ),
+              )
+            else
+              ElevatedButton.icon(
+                onPressed: null,
+                icon: const Icon(Icons.lock_outline, size: 16),
+                label: const Text('Private Repository'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.background.withValues(alpha: 0.5),
+                  foregroundColor: AppTheme.secondaryText,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),
