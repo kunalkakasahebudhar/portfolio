@@ -1,0 +1,337 @@
+{
+    "info": {
+        "_postman_id": "portfolio-contact-api",
+        "name": "Portfolio Contact API",
+        "description": "API collection for testing the portfolio contact form backend with Gmail SMTP integration.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8910/health",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "health"
+                    ]
+                },
+                "description": "Check if the API is running and healthy."
+            },
+            "response": []
+        },
+        {
+            "name": "Send Contact Form - Valid",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"subject\": \"Project Inquiry\",\n    \"message\": \"I would like to discuss a potential project with you. I'm interested in your Flutter development services.\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Send a valid contact form submission with all required fields."
+            },
+            "response": []
+        },
+        {
+            "name": "Send Contact Form - Without Subject",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane@example.com\",\n    \"message\": \"Testing without a subject line. The API should use a default subject based on my name.\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Send contact form without subject. Should use default subject: 'Portfolio Contact from [Name]'."
+            },
+            "response": []
+        },
+        {
+            "name": "Validation - Missing Name",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"test@example.com\",\n    \"message\": \"This should fail because name is missing.\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test validation error when name is missing. Expected: 400 Bad Request with error message."
+            },
+            "response": []
+        },
+        {
+            "name": "Validation - Missing Email",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Test User\",\n    \"message\": \"This should fail because email is missing.\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test validation error when email is missing. Expected: 400 Bad Request."
+            },
+            "response": []
+        },
+        {
+            "name": "Validation - Invalid Email Format",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"not-a-valid-email\",\n    \"message\": \"This should fail because email format is invalid.\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test validation error for invalid email format. Expected: 400 Bad Request with 'invalid email format' message."
+            },
+            "response": []
+        },
+        {
+            "name": "Validation - Missing Message",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test validation error when message is missing. Expected: 400 Bad Request."
+            },
+            "response": []
+        },
+        {
+            "name": "Validation - Short Name",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"AB\",\n    \"email\": \"test@example.com\",\n    \"message\": \"This should fail because name is too short (less than 3 characters).\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test validation error for name shorter than 3 characters. Expected: 400 Bad Request."
+            },
+            "response": []
+        },
+        {
+            "name": "Validation - Short Message",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"message\": \"Short\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test validation error for message shorter than 10 characters. Expected: 400 Bad Request."
+            },
+            "response": []
+        },
+        {
+            "name": "Method Not Allowed - GET on Contact",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Test that GET method is not allowed on /api/contact endpoint. Expected: 405 Method Not Allowed."
+            },
+            "response": []
+        },
+        {
+            "name": "Send Contact Form - Long Message",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Alice Johnson\",\n    \"email\": \"alice@example.com\",\n    \"subject\": \"Detailed Project Proposal\",\n    \"message\": \"Hello,\\n\\nI am reaching out to discuss a comprehensive Flutter project that I believe would be a great fit for your expertise.\\n\\nThe project involves:\\n1. Building a cross-platform mobile application\\n2. Integrating with REST APIs\\n3. Implementing real-time features\\n4. Creating a beautiful, responsive UI\\n\\nI would love to schedule a call to discuss this further. Please let me know your availability.\\n\\nBest regards,\\nAlice\"\n}"
+                },
+                "url": {
+                    "raw": "http://localhost:8910/api/contact",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8910",
+                    "path": [
+                        "api",
+                        "contact"
+                    ]
+                },
+                "description": "Send a contact form with a longer, multi-line message to test formatting in the email."
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8910",
+            "type": "string"
+        }
+    ]
+}
