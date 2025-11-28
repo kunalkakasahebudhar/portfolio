@@ -94,47 +94,7 @@ class ContactScreen extends StatelessWidget {
   }
 
   Widget _buildContactForm(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(32),
-      decoration: BoxDecoration(
-        color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Send Message',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppTheme.primaryText,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 24),
-          _CustomTextField(label: 'Name', hint: 'Your Name'),
-          const SizedBox(height: 16),
-          _CustomTextField(label: 'Email', hint: 'your.email@example.com'),
-          const SizedBox(height: 16),
-          _CustomTextField(
-            label: 'Message',
-            hint: 'Write your message here...',
-            maxLines: 5,
-          ),
-          const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text('Send Message'),
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0);
+    return const _ContactForm();
   }
 
   Future<void> _launchUrl(String url) async {
@@ -204,19 +164,193 @@ class _ContactItem extends StatelessWidget {
   }
 }
 
-class _CustomTextField extends StatelessWidget {
-  final String label;
-  final String hint;
-  final int maxLines;
+class _ContactForm extends StatefulWidget {
+  const _ContactForm();
 
-  const _CustomTextField({
-    required this.label,
-    required this.hint,
-    this.maxLines = 1,
-  });
+  @override
+  State<_ContactForm> createState() => _ContactFormState();
+}
+
+class _ContactFormState extends State<_ContactForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _messageController = TextEditingController();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _messageController.dispose();
+    super.dispose();
+  }
+
+  String? _encodeQueryParameters(Map<String, String> params) {
+    return params.entries
+        .map(
+          (e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}',
+        )
+        .join('&');
+  }
+
+  Future<void> _sendEmail() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    final name = _nameController.text;
+    final email = _emailController.text;
+    final message = _messageController.text;
+
+    final String subject = 'New Portfolio Contact from $name';
+    final String body = 'Name: $name\nEmail: $email\n\nMessage:\n$message';
+
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'kudhar892@gmail.com',
+      query: _encodeQueryParameters(<String, String>{
+        'subject': subject,
+        'body': body,
+      }),
+    );
+
+    try {
+      if (await canLaunchUrl(emailLaunchUri)) {
+        await launchUrl(emailLaunchUri);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Could not open email app'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Could not open email app'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: AppTheme.cardColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Send Message',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: AppTheme.primaryText,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildTextField(
+              label: 'Name',
+              hint: 'Your Name',
+              controller: _nameController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your name';
+                }
+                if (value.length < 3) {
+                  return 'Name must be at least 3 characters';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
+              label: 'Email',
+              hint: 'your.email@example.com',
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                if (!RegExp(
+                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                ).hasMatch(value)) {
+                  return 'Please enter a valid email';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            _buildTextField(
+              label: 'Message',
+              hint: 'Write your message here...',
+              controller: _messageController,
+              maxLines: 5,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a message';
+                }
+                if (value.length < 10) {
+                  return 'Message must be at least 10 characters';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 32),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _sendEmail,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppTheme.accentColor,
+                  foregroundColor: Colors.white,
+                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text('Send Message'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0);
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+    String? Function(String?)? validator,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -228,8 +362,11 @@ class _CustomTextField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        TextField(
+        TextFormField(
+          controller: controller,
           maxLines: maxLines,
+          keyboardType: keyboardType,
+          validator: validator,
           style: const TextStyle(color: AppTheme.primaryText),
           decoration: InputDecoration(
             hintText: hint,
@@ -251,6 +388,14 @@ class _CustomTextField extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppTheme.accentColor),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.redAccent),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.redAccent),
             ),
             contentPadding: const EdgeInsets.all(16),
           ),

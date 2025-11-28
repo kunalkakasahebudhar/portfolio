@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "372537212328",
+    "project_id": "kunal-portfolio-94d4f",
+    "storage_bucket": "kunal-portfolio-94d4f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:372537212328:android:df57d4ee52fc7997d5f19d",
+        "android_client_info": {
+          "package_name": "com.example.portfolio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8WNradI44S9mbMFmdStBKd5dk7avsElU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
