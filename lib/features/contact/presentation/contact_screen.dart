@@ -3,8 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:portfolio/features/contact/domain/contact_model.dart';
-import 'package:portfolio/features/contact/data/contact_api_service.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
@@ -179,8 +177,6 @@ class _ContactFormState extends State<_ContactForm> {
   final _emailController = TextEditingController();
   final _subjectController = TextEditingController();
   final _messageController = TextEditingController();
-  final _apiService = ContactApiService();
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -194,45 +190,17 @@ class _ContactFormState extends State<_ContactForm> {
   Future<void> _sendMessage() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isLoading = true);
+    // Simulate sending delay
+    await Future.delayed(const Duration(seconds: 1));
 
-    try {
-      // Create contact model
-      final contact = ContactModel(
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        subject: _subjectController.text.trim().isEmpty
-            ? null
-            : _subjectController.text.trim(),
-        message: _messageController.text.trim(),
+    if (mounted) {
+      _nameController.clear();
+      _emailController.clear();
+      _subjectController.clear();
+      _messageController.clear();
+      _showSuccessDialog(
+        'Thank you for your message! This is a demo form, but I appreciate your interest.',
       );
-
-      // Send to API
-      final response = await _apiService.sendContactMessageDetailed(contact);
-
-      if (mounted) {
-        if (response.success) {
-          // Clear form
-          _nameController.clear();
-          _emailController.clear();
-          _subjectController.clear();
-          _messageController.clear();
-
-          // Show success dialog
-          _showSuccessDialog(response.message);
-        } else {
-          // Show error dialog
-          _showErrorDialog(response.message);
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        _showErrorDialog(e.toString());
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
     }
   }
 
@@ -261,44 +229,6 @@ class _ContactFormState extends State<_ContactForm> {
               'Success!',
               style: TextStyle(color: AppTheme.primaryText),
             ),
-          ],
-        ),
-        content: Text(
-          message,
-          style: const TextStyle(color: AppTheme.secondaryText),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppTheme.cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.red.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 32,
-              ),
-            ),
-            const SizedBox(width: 16),
-            const Text('Error', style: TextStyle(color: AppTheme.primaryText)),
           ],
         ),
         content: Text(
@@ -395,7 +325,7 @@ class _ContactFormState extends State<_ContactForm> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _sendMessage,
+                onPressed: _sendMessage,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppTheme.accentColor,
@@ -404,23 +334,7 @@ class _ContactFormState extends State<_ContactForm> {
                     alpha: 0.5,
                   ),
                 ),
-                child: _isLoading
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(width: 12),
-                          Text('Sending...'),
-                        ],
-                      )
-                    : const Text('Send Message'),
+                child: const Text('Send Message'),
               ),
             ),
           ],
