@@ -166,7 +166,7 @@ class HomeScreen extends StatelessWidget {
 
         // Description
         Text(
-          'I build pixel-perfect, engaging, and accessible digital experiences. Focused on creating intuitive mobile applications with clean architecture.',
+          'I create modern, user-friendly, and performance-focused mobile applications using Flutter and Android. I focus on clean UI, smooth animations, and delivering seamless experiences for real-world users and businesses.',
           textAlign: isDesktop ? TextAlign.left : TextAlign.center,
           style: GoogleFonts.inter(
             fontSize: 16,
