@@ -1,0 +1,3 @@
+void downloadCV() {
+  // Stub implementation
+}

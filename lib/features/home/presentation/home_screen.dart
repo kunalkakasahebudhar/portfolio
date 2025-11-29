@@ -7,6 +7,8 @@ import 'package:portfolio/core/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:portfolio/core/utils/launcher/launcher.dart';
+
 class HomeScreen extends StatelessWidget {
   final VoidCallback? onViewProjects;
 
@@ -198,7 +200,7 @@ class HomeScreen extends StatelessWidget {
               child: const Text('View Projects'),
             ),
             OutlinedButton(
-              onPressed: () => _launchUrl('assets/resume/kunalCV.pdf'),
+              onPressed: () => launchCV(),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,

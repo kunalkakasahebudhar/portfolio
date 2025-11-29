@@ -3,8 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:simple_icons/simple_icons.dart';
+
+import 'package:portfolio/core/utils/launcher/launcher.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -124,7 +126,7 @@ class SkillsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: () => _launchUrl('assets/resume/kunalCV.pdf'),
+            onPressed: () => launchCV(),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFF2F7A1), // Light yellow
               foregroundColor: Colors.black,
@@ -142,13 +144,6 @@ class SkillsScreen extends StatelessWidget {
         ],
       ),
     ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.2, end: 0);
-  }
-
-  Future<void> _launchUrl(String url) async {
-    // Implementation for launching URL
-    if (!await launchUrl(Uri.parse(url))) {
-      throw Exception('Could not launch $url');
-    }
   }
 }
 

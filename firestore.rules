@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Only your app can write to contactMessages
+    match /contactMessages/{document} {
+      allow write: if true;     // Flutter app will write
+      allow read: if false;     // No one can read from outside
+    }
+
+    // Block everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
