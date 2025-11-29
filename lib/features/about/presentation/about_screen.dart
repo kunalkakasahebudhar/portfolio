@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/theme/theme.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -16,35 +16,49 @@ class AboutScreen extends StatelessWidget {
       decoration: const BoxDecoration(color: AppTheme.background),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? size.width * 0.1 : 24,
-          vertical: 60,
+          horizontal: isDesktop ? size.width * 0.15 : 24,
+          vertical: 80,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'About Me',
-              style: Theme.of(context).textTheme.displayMedium,
-            ).animate().fadeIn().slideX(),
-            const SizedBox(height: 40),
-            if (isDesktop)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 2, child: _buildBio(context)),
-                  const SizedBox(width: 60),
-                  Expanded(flex: 1, child: _buildProfileImage()),
-                ],
-              )
-            else
-              Column(
-                children: [
-                  _buildProfileImage(),
-                  const SizedBox(height: 40),
-                  _buildBio(context),
-                ],
+            // Section Title
+            ShaderMask(
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [Colors.white, AppTheme.accentColor],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(bounds),
+              child: Text(
+                'About Me',
+                style: GoogleFonts.poppins(
+                  fontSize: isDesktop ? 48 : 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
+            ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
+
+            const SizedBox(height: 16),
+
+            // Subtitle Decoration
+            Container(
+              width: 60,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppTheme.accentColor,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ).animate().fadeIn(delay: 200.ms).scaleX(),
+
             const SizedBox(height: 60),
+
+            // Bio Content
+            _buildBio(context, isDesktop),
+
+            const SizedBox(height: 60),
+
+            // Info Cards
             _buildInfoCards(context, isDesktop),
           ],
         ),
@@ -52,59 +66,51 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileImage() {
+  Widget _buildBio(BuildContext context, bool isDesktop) {
     return Container(
-      width: 300,
-      height: 300,
-      decoration: BoxDecoration(
-        color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+      constraints: const BoxConstraints(maxWidth: 900),
+      child: Column(
+        children: [
+          Text(
+            "I'm a Junior Flutter Developer focused on building smooth, high-performance mobile apps. Skilled in Dart, Flutter, UI/UX, API integration, and REST architecture.",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: isDesktop ? 18 : 16,
+              color: AppTheme.primaryText,
+              height: 1.8,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            "I convert ideas into scalable, user-friendly applications. Currently learning State Management, Backend Connectivity, and Golang. My goal is to create meaningful projects that provide real value to users.",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.inter(
+              fontSize: isDesktop ? 18 : 16,
+              color: AppTheme.secondaryText,
+              height: 1.8,
+            ),
           ),
         ],
-        border: Border.all(color: AppTheme.accentColor.withValues(alpha: 0.2)),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.asset('assets/images/profile_pic.png', fit: BoxFit.cover),
-      ),
-    ).animate().fadeIn(delay: 200.ms).scale();
-  }
-
-  Widget _buildBio(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "I'm a Junior Flutter Developer focused on building smooth, high-performance mobile apps. Skilled in Dart, Flutter, UI/UX, API integration, and REST architecture.",
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
-        ),
-        const SizedBox(height: 20),
-        Text(
-          "I convert ideas into scalable, user-friendly applications. Currently learning State Management, Backend Connectivity, and Golang. My goal is to create meaningful projects that provide real value to users.",
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.6),
-        ),
-      ],
-    ).animate().fadeIn(delay: 400.ms).slideX();
+    ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0);
   }
 
   Widget _buildInfoCards(BuildContext context, bool isDesktop) {
     return Wrap(
-      spacing: 24,
-      runSpacing: 24,
+      spacing: 32,
+      runSpacing: 32,
+      alignment: WrapAlignment.center,
       children: [
         _InfoCard(
           title: 'Experience',
-          icon: Icons.work_outline,
+          icon: Icons.work_outline_rounded,
           items: const [
             'Junior Flutter Developer At MHTECHIN',
             'Android Developer Intern At MHTECHIN',
           ],
           width: isDesktop ? 400 : double.infinity,
+          delay: 600.ms,
         ),
         _InfoCard(
           title: 'Education',
@@ -114,71 +120,127 @@ class AboutScreen extends StatelessWidget {
             'Certified Flutter Developer',
           ],
           width: isDesktop ? 400 : double.infinity,
+          delay: 800.ms,
         ),
       ],
-    ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2, end: 0);
+    );
   }
 }
 
-class _InfoCard extends StatelessWidget {
+class _InfoCard extends StatefulWidget {
   final String title;
   final IconData icon;
   final List<String> items;
   final double width;
+  final Duration delay;
 
   const _InfoCard({
     required this.title,
     required this.icon,
     required this.items,
     required this.width,
+    required this.delay,
   });
 
   @override
+  State<_InfoCard> createState() => _InfoCardState();
+}
+
+class _InfoCardState extends State<_InfoCard> {
+  bool _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppTheme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: AppTheme.accentColor),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppTheme.primaryText,
-                  fontWeight: FontWeight.w600,
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: widget.width,
+        padding: const EdgeInsets.all(32),
+        decoration: BoxDecoration(
+          color: _isHovered
+              ? AppTheme.cardColor.withOpacity(0.8)
+              : AppTheme.cardColor.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: _isHovered
+                ? AppTheme.accentColor.withOpacity(0.5)
+                : Colors.white.withOpacity(0.05),
+          ),
+          boxShadow: _isHovered
+              ? [
+                  BoxShadow(
+                    color: AppTheme.accentColor.withOpacity(0.1),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
+                  ),
+                ]
+              : [],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    widget.icon,
+                    color: AppTheme.accentColor,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  widget.title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.primaryText,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            ...widget.items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Icon(
+                        Icons.circle,
+                        size: 6,
+                        color: _isHovered
+                            ? AppTheme.accentColor
+                            : AppTheme.secondaryText,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: AppTheme.secondaryText,
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          ...items.map(
-            (item) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                children: [
-                  const Icon(Icons.arrow_right, color: AppTheme.secondaryText),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      item,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-                ],
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
+    ).animate().fadeIn(delay: widget.delay).slideY(begin: 0.2, end: 0);
   }
 }
