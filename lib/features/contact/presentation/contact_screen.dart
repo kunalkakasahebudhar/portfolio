@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:portfolio/features/contact/data/contact_service.dart';
 
 class ContactScreen extends StatelessWidget {
   const ContactScreen({super.key});
@@ -177,6 +178,8 @@ class _ContactFormState extends State<_ContactForm> {
   final _emailController = TextEditingController();
   final _subjectController = TextEditingController();
   final _messageController = TextEditingController();
+  final _contactService = ContactService();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -190,59 +193,45 @@ class _ContactFormState extends State<_ContactForm> {
   Future<void> _sendMessage() async {
     if (!_formKey.currentState!.validate()) return;
 
-    // Simulate sending delay
-    await Future.delayed(const Duration(seconds: 1));
+    setState(() => _isLoading = true);
 
-    if (mounted) {
-      _nameController.clear();
-      _emailController.clear();
-      _subjectController.clear();
-      _messageController.clear();
-      _showSuccessDialog(
-        'Thank you for your message! This is a demo form, but I appreciate your interest.',
+    try {
+      await _contactService.saveContactMessage(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        message: _messageController.text.trim(),
+        subject: _subjectController.text.trim().isEmpty
+            ? null
+            : _subjectController.text.trim(),
       );
-    }
-  }
 
-  void _showSuccessDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppTheme.cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.green.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 32,
-              ),
-            ),
-            const SizedBox(width: 16),
-            const Text(
-              'Success!',
-              style: TextStyle(color: AppTheme.primaryText),
-            ),
-          ],
-        ),
-        content: Text(
-          message,
-          style: const TextStyle(color: AppTheme.secondaryText),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+      if (mounted) {
+        _nameController.clear();
+        _emailController.clear();
+        _subjectController.clear();
+        _messageController.clear();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Message sent successfully!'),
+            backgroundColor: Colors.green,
           ),
-        ],
-      ),
-    );
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error sending message: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -325,7 +314,7 @@ class _ContactFormState extends State<_ContactForm> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _sendMessage,
+                onPressed: _isLoading ? null : _sendMessage,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: AppTheme.accentColor,
@@ -334,7 +323,16 @@ class _ContactFormState extends State<_ContactForm> {
                     alpha: 0.5,
                   ),
                 ),
-                child: const Text('Send Message'),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text('Send Message'),
               ),
             ),
           ],
