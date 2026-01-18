@@ -1,11 +1,11 @@
 import 'dart:html' as html;
 
 void downloadCV() {
-  final anchor = html.AnchorElement(href: 'assets/resume/My Resume (2).pdf')
-    ..target = 'blank'
-    ..download = 'Kunal_Udhar_Resume.pdf';
+  // PDF is in web/resume/ folder, so path is relative to build/web/
+  final url = 'resume/Kunal_Udhar_Resume.pdf';
 
-  html.document.body?.children.add(anchor);
-  anchor.click();
-  html.document.body?.children.remove(anchor);
+  // Create anchor element and trigger download
+  html.AnchorElement(href: url)
+    ..setAttribute('download', 'Kunal_Udhar_Resume.pdf')
+    ..click();
 }

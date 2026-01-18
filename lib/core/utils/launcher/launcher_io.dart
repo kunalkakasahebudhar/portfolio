@@ -7,7 +7,7 @@ Future<void> downloadCV() async {
   try {
     // Load the PDF from assets
     final ByteData data = await rootBundle.load(
-      'assets/resume/My Resume (2).pdf',
+      'assets/resume/Kunal_Udhar_Resume.pdf',
     );
     final List<int> bytes = data.buffer.asUint8List();
 
