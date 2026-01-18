@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/theme/theme.dart';
+import 'dart:html' as html;
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -242,5 +244,126 @@ class _InfoCardState extends State<_InfoCard> {
         ),
       ),
     ).animate().fadeIn(delay: widget.delay).slideY(begin: 0.2, end: 0);
+  }
+}
+
+class _DownloadCVButton extends StatefulWidget {
+  final bool isDesktop;
+
+  const _DownloadCVButton({required this.isDesktop});
+
+  @override
+  State<_DownloadCVButton> createState() => _DownloadCVButtonState();
+}
+
+class _DownloadCVButtonState extends State<_DownloadCVButton> {
+  bool _isHovered = false;
+  bool _isDownloading = false;
+
+  Future<void> _downloadCV() async {
+    setState(() => _isDownloading = true);
+
+    try {
+      // For web platform, use dart:html to download
+      html.AnchorElement(href: 'assets/resume/My Resume (2).pdf')
+        ..setAttribute('download', 'Kunal_Kakasaheb_Udhar_Resume.pdf')
+        ..click();
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.check_circle, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(
+                  'Resume downloaded successfully!',
+                  style: GoogleFonts.inter(color: Colors.white),
+                ),
+              ],
+            ),
+            backgroundColor: AppTheme.accentColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.error, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(
+                  'Failed to download resume',
+                  style: GoogleFonts.inter(color: Colors.white),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isDownloading = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        child: ElevatedButton.icon(
+          onPressed: _isDownloading ? null : _downloadCV,
+          icon: _isDownloading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+              : const Icon(Icons.download_rounded, size: 24),
+          label: Text(
+            _isDownloading ? 'Downloading...' : 'Download CV',
+            style: GoogleFonts.poppins(
+              fontSize: widget.isDesktop ? 16 : 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: _isHovered
+                ? AppTheme.accentColor.withOpacity(0.9)
+                : AppTheme.accentColor,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(
+              horizontal: widget.isDesktop ? 40 : 32,
+              vertical: widget.isDesktop ? 20 : 16,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            elevation: _isHovered ? 12 : 6,
+            shadowColor: AppTheme.accentColor.withOpacity(0.5),
+          ),
+        ),
+      ),
+    );
   }
 }

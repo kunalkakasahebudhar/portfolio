@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:portfolio/core/theme/theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+// ignore: unused_import
 import 'package:simple_icons/simple_icons.dart';
 
 import 'package:portfolio/core/utils/launcher/launcher.dart';
@@ -105,7 +105,7 @@ class SkillsScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            '7+',
+            '8+',
             style: GoogleFonts.poppins(
               fontSize: 80,
               fontWeight: FontWeight.bold,

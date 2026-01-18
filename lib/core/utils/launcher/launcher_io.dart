@@ -1,12 +1,47 @@
-import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 Future<void> downloadCV() async {
-  // On mobile, we can't easily "download" an asset to the filesystem without copying it first.
-  // However, for now, we'll try to launch it, which might open it if it's a remote URL.
-  // Since it's a local asset, this might fail on mobile, but the user issue is specific to web.
-  // A proper mobile implementation would involve path_provider and open_file.
-  final Uri url = Uri.parse('assets/resume/kunalCV.pdf');
-  if (!await launchUrl(url)) {
-    throw Exception('Could not launch $url');
+  try {
+    // Load the PDF from assets
+    final ByteData data = await rootBundle.load(
+      'assets/resume/My Resume (2).pdf',
+    );
+    final List<int> bytes = data.buffer.asUint8List();
+
+    // Get the downloads directory (or app documents directory)
+    Directory? directory;
+    if (Platform.isAndroid) {
+      // For Android, try to get the downloads directory
+      directory = Directory('/storage/emulated/0/Download');
+      if (!await directory.exists()) {
+        // Fallback to app's external storage directory
+        directory = await getExternalStorageDirectory();
+      }
+    } else if (Platform.isIOS) {
+      // For iOS, use the app's documents directory
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      // For other platforms (desktop), use downloads directory
+      directory = await getDownloadsDirectory();
+    }
+
+    if (directory == null) {
+      throw Exception('Could not find directory to save file');
+    }
+
+    // Create the file path
+    final String filePath = '${directory.path}/Kunal_Udhar_Resume.pdf';
+    final File file = File(filePath);
+
+    // Write the file
+    await file.writeAsBytes(bytes);
+
+    // Open the file
+    await OpenFile.open(filePath);
+  } catch (e) {
+    throw Exception('Failed to download CV: $e');
   }
 }

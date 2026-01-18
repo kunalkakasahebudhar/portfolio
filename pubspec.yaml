@@ -43,6 +43,8 @@ dependencies:
   firebase_core: ^3.6.0
   cloud_firestore: ^5.4.4
   simple_icons: ^14.6.1
+  path_provider: ^2.1.2
+  open_file: ^3.3.2
 
 
 dev_dependencies:

@@ -58,7 +58,7 @@ lib/
 │       └── presentation/
 │           └── skills_screen.dart    # Technical skills
 │
-├── shared/
+├── shared/ 
 │   └── widgets/
 │       ├── bottom_navigation_bar.dart  # Mobile navigation
 │       ├── social_media_icon.dart      # Social media icons
